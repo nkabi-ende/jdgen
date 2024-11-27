@@ -12,7 +12,15 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 def generate_jd():
     if request.method == 'POST':
         job_title = request.form['job_title']
-        prompt = f"Write a detailed job description for a {job_title} position."
+        company_name = request.form.get('company_name', 'the company')
+        responsibilities = request.form.get('responsibilities', '')
+
+        # Build the prompt dynamically based on user inputs
+        prompt = f"Write a detailed job description for a {job_title} position at {company_name}."
+        if responsibilities.strip():
+            prompt += f" The key responsibilities include: {responsibilities}."
+        else:
+            prompt += " Include the typical responsibilities and qualifications for this role."
 
         try:
             response = openai.ChatCompletion.create(
@@ -20,7 +28,7 @@ def generate_jd():
                 messages=[
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=250,
+                max_tokens=500,  # Increased to allow for more detailed responses
                 temperature=0.7,
             )
 
@@ -36,4 +44,4 @@ def generate_jd():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

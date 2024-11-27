@@ -1,11 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>JDGEN - Your Job Description</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    >
 </head>
 <body>
-    <h1>Your Generated Job Description</h1>
-    <p>{{ job_description }}</p>
-    <a href="/">Generate Another</a>
+    <div class="container">
+        <h1 class="mt-5 mb-4 text-center">Your Generated Job Description</h1>
+        <div class="card">
+            <div class="card-body">
+                <div class="text-right mb-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
+                </div>
+                <pre id="jobDescription" style="white-space: pre-wrap; font-size: 1rem;">{{ job_description }}</pre>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-secondary">Generate Another</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <!-- Copy to Clipboard Script -->
+    <script>
+        function copyToClipboard() {
+            const jobDescription = document.getElementById('jobDescription').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = jobDescription;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Job description copied to clipboard!');
+        }
+    </script>
 </body>
 </html>
