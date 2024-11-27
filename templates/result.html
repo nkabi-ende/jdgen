@@ -16,6 +16,7 @@
             <div class="card-body">
                 <div class="text-right mb-2">
                     <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
+                    <a href="{{ url_for('download_pdf') }}" class="btn btn-sm btn-outline-success">Download PDF</a>
                 </div>
                 <pre id="jobDescription" style="white-space: pre-wrap; font-size: 1rem;">{{ job_description }}</pre>
             </div>
