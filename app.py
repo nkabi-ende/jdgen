@@ -82,6 +82,7 @@ Make sure to write the job description in an engaging tone that highlights the e
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
+                    {"role": "system", "content": "You are a professional job description writer specializing in creating engaging and persuasive job postings."},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=1000,  # Increased to allow for more detailed responses

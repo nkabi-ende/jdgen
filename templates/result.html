@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>JDGEN - Your Job Description</title>
+    <!-- Meta Tags for Responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -12,17 +14,21 @@
 <body>
     <div class="container">
         <h1 class="mt-5 mb-4 text-center">Your Generated Job Description</h1>
-        <div class="card">
-            <div class="card-body">
-                <div class="text-right mb-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
-                    <a href="{{ url_for('download_pdf') }}" class="btn btn-sm btn-outline-success">Download PDF</a>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-right mb-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
+                            <a href="{{ url_for('download_pdf') }}" class="btn btn-sm btn-outline-success">Download PDF</a>
+                        </div>
+                        <pre id="jobDescription" style="white-space: pre-wrap; font-size: 1rem;">{{ job_description }}</pre>
+                    </div>
                 </div>
-                <pre id="jobDescription" style="white-space: pre-wrap; font-size: 1rem;">{{ job_description }}</pre>
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-secondary">Generate Another</a>
+                </div>
             </div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="/" class="btn btn-secondary">Generate Another</a>
         </div>
     </div>
 
