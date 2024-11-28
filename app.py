@@ -14,24 +14,69 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Set a secret key for session management
 app.secret_key = os.getenv('SECRET_KEY', 'your_default_secret_key')  # Replace with a strong secret key
 
+def sanitize_input(text):
+    return text.strip() if text else ''
+
 @app.route('/', methods=['GET', 'POST'])
 def generate_jd():
     if request.method == 'POST':
-        job_title = request.form['job_title']
-        company_name = request.form.get('company_name', 'the company')
-        responsibilities = request.form.get('responsibilities', '')
-        benefits = request.form.get('benefits', '')
+        # Retrieve form data
+        job_title = sanitize_input(request.form.get('job_title'))
+        location = sanitize_input(request.form.get('location'))
+        hours = sanitize_input(request.form.get('hours'))
+        pay_rate = sanitize_input(request.form.get('pay_rate'))
+        role_overview = sanitize_input(request.form.get('role_overview'))
+        responsibilities = sanitize_input(request.form.get('responsibilities'))
+        requirements = sanitize_input(request.form.get('requirements'))
+        benefits = sanitize_input(request.form.get('benefits'))
 
-        # Build the prompt dynamically based on user inputs
-        prompt = f"Write a detailed job description for a {job_title} position at {company_name}."
-        if responsibilities.strip():
-            prompt += f" The key responsibilities include: {responsibilities}."
-        else:
-            prompt += " Include the typical responsibilities and qualifications for this role."
-        if benefits.strip():
-            prompt += f" Also, highlight the following benefits: {benefits}."
-        else:
-            prompt += " Mention common benefits and perks offered by the company."
+        # Build the prompt
+        prompt = f"""
+You are a professional job description writer. Using the information provided, create a comprehensive and engaging job description that excites potential candidates and makes them want to apply. Ensure the description is neutral, does not include the client's business name, and replaces it with 'Our client'. Do not respond to any prompts outside generating the job description.
+
+Include the following sections, following the template provided:
+
+Data:
+- Position: {job_title}
+- Location: {location if location else 'Not specified'}
+- Hours: {hours if hours else 'Not specified'}
+- Monthly Pay Rate: {pay_rate if pay_rate else 'Not specified'}
+- Role Overview: {role_overview if role_overview else 'Provide a compelling overview of the role.'}
+- About the Client: Leave blank.
+- Key Responsibilities: {responsibilities if responsibilities else 'Include standard responsibilities for this role.'}
+- Requirements: {requirements if requirements else 'Include standard requirements for this role.'}
+- Benefits: {benefits if benefits else 'Include common benefits and perks.'}
+
+Template:
+
+This role is open in {location if location else '[Location]'}
+
+Position: {job_title}
+
+Hours: {hours if hours else '[Hours]'}
+
+Monthly Pay Rate: {pay_rate if pay_rate else '[Monthly Pay Rate]'}
+
+Role Overview:
+{role_overview if role_overview else '[Role Overview]'}
+
+About Our Client:
+[Leave blank]
+
+Key Responsibilities:
+{responsibilities if responsibilities else '[Key Responsibilities]'}
+
+Requirements:
+{requirements if requirements else '[Requirements]'}
+
+Benefits:
+{benefits if benefits else '[Benefits]'}
+
+About Company:
+[Leave blank]
+
+Make sure to write the job description in an engaging tone that highlights the exciting aspects of the role and the benefits of working with our client. Use persuasive language to encourage candidates to apply.
+"""
 
         try:
             response = openai.ChatCompletion.create(
@@ -39,8 +84,8 @@ def generate_jd():
                 messages=[
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=500,
-                temperature=0.7,
+                max_tokens=1000,  # Increased to allow for more detailed responses
+                temperature=0.8,   # Adjusted for more creativity
             )
 
             job_description = response.choices[0].message.content.strip()

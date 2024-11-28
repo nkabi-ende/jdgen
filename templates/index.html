@@ -13,8 +13,9 @@
     <div class="container">
         <h1 class="mt-5 mb-4 text-center">Generate Job Description</h1>
         <form method="post" onsubmit="showLoader()">
+            <!-- Job Title -->
             <div class="form-group">
-                <label for="job_title">Job Title</label>
+                <label for="job_title">Position</label>
                 <input
                   type="text"
                   class="form-control"
@@ -24,16 +25,51 @@
                   required
                 >
             </div>
+            <!-- Location -->
             <div class="form-group">
-                <label for="company_name">Company Name</label>
+                <label for="location">Location</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="company_name"
-                  name="company_name"
-                  placeholder="Enter the company name"
+                  id="location"
+                  name="location"
+                  placeholder="Enter the job location"
                 >
             </div>
+            <!-- Hours -->
+            <div class="form-group">
+                <label for="hours">Hours</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="hours"
+                  name="hours"
+                  placeholder="Enter working hours (leave blank if unknown)"
+                >
+            </div>
+            <!-- Monthly Pay Rate -->
+            <div class="form-group">
+                <label for="pay_rate">Monthly Pay Rate</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pay_rate"
+                  name="pay_rate"
+                  placeholder="Enter the monthly pay rate (leave blank if unknown)"
+                >
+            </div>
+            <!-- Role Overview -->
+            <div class="form-group">
+                <label for="role_overview">Role Overview</label>
+                <textarea
+                  class="form-control"
+                  id="role_overview"
+                  name="role_overview"
+                  rows="3"
+                  placeholder="Provide an overview of the role"
+                ></textarea>
+            </div>
+            <!-- Key Responsibilities -->
             <div class="form-group">
                 <label for="responsibilities">Key Responsibilities</label>
                 <textarea
@@ -44,6 +80,18 @@
                   placeholder="List key responsibilities"
                 ></textarea>
             </div>
+            <!-- Requirements -->
+            <div class="form-group">
+                <label for="requirements">Requirements</label>
+                <textarea
+                  class="form-control"
+                  id="requirements"
+                  name="requirements"
+                  rows="3"
+                  placeholder="List requirements for the role"
+                ></textarea>
+            </div>
+            <!-- Benefits -->
             <div class="form-group">
                 <label for="benefits">Benefits</label>
                 <textarea
@@ -54,6 +102,7 @@
                   placeholder="List benefits and perks"
                 ></textarea>
             </div>
+            <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-block">Generate</button>
         </form>
         <div id="loader" class="text-center mt-3" style="display: none;">
