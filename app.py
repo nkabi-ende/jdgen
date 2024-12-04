@@ -76,7 +76,7 @@ Do not include any other sections.
             )
 
             job_description = response.choices[0].message.content.strip()
-            session['job_description'] = job_description  # Store the job description in the session
+            # session['job_description'] = job_description  # No longer needed
             return render_template('result.html', job_description=job_description)
         except AuthenticationError:
             return "Authentication Error: Please check your OpenAI API key."
@@ -84,18 +84,12 @@ Do not include any other sections.
             return f"An error occurred: {str(e)}"
     return render_template('index.html')
 
-@app.route('/download_pdf', methods=['GET', 'POST'])
+@app.route('/download_pdf', methods=['POST'])
 def download_pdf():
-    if request.method == 'POST':
-        # Retrieve job_description from the form data
-        job_description = request.form.get('job_description', '')
-        if not job_description:
-            return redirect(url_for('generate_jd'))
-    else:
-        # If GET request, try to get job_description from the session (optional)
-        job_description = session.get('job_description', '')
-        if not job_description:
-            return redirect(url_for('generate_jd'))
+    # Retrieve job_description from the form data
+    job_description = request.form.get('job_description', '')
+    if not job_description:
+        return redirect(url_for('generate_jd'))
 
     # Set the logo filename
     logo_filename = 'Employmate_Logo_2.png'  # Ensure this matches your logo file name

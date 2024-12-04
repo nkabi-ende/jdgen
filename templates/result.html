@@ -28,6 +28,10 @@
         .job-description li {
             margin-bottom: 5px;
         }
+        /* Hide the textarea used for form submission */
+        #jobDescriptionField {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -41,7 +45,7 @@
                             <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
                             <!-- Download PDF Form -->
                             <form method="post" action="{{ url_for('download_pdf') }}" style="display: inline;">
-                                <input type="hidden" name="job_description" value="{{ job_description|tojson }}">
+                                <textarea id="jobDescriptionField" name="job_description">{{ job_description|safe }}</textarea>
                                 <button type="submit" class="btn btn-sm btn-outline-success">Download PDF</button>
                             </form>
                         </div>
