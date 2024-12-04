@@ -10,6 +10,25 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     >
+    <style>
+        .job-description {
+            font-size: 1rem;
+        }
+        .job-description h2 {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+        .job-description p {
+            margin-bottom: 15px;
+        }
+        .job-description ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .job-description li {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -22,7 +41,7 @@
                             <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
                             <a href="{{ url_for('download_pdf') }}" class="btn btn-sm btn-outline-success">Download PDF</a>
                         </div>
-                        <pre id="jobDescription" style="white-space: pre-wrap; font-size: 1rem;">{{ job_description }}</pre>
+                        <div id="jobDescription" class="job-description">{{ job_description|safe }}</div>
                     </div>
                 </div>
                 <div class="text-center mt-4">

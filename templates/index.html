@@ -18,7 +18,7 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-8">
                 <form method="post" onsubmit="showLoader()">
-                    <!-- Job Title -->
+                    <!-- Position -->
                     <div class="form-group">
                         <label for="job_title">Position</label>
                         <input
@@ -30,17 +30,6 @@
                           required
                         >
                     </div>
-                    <!-- Location -->
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="location"
-                          name="location"
-                          placeholder="Enter the job location"
-                        >
-                    </div>
                     <!-- Hours -->
                     <div class="form-group">
                         <label for="hours">Hours</label>
@@ -49,30 +38,19 @@
                           class="form-control"
                           id="hours"
                           name="hours"
-                          placeholder="Enter working hours (leave blank if unknown)"
+                          placeholder="Enter working hours e.g., 9am-5pm AEST"
                         >
                     </div>
-                    <!-- Monthly Pay Rate -->
+                    <!-- Industry -->
                     <div class="form-group">
-                        <label for="pay_rate">Monthly Pay Rate</label>
+                        <label for="industry">Industry</label>
                         <input
                           type="text"
                           class="form-control"
-                          id="pay_rate"
-                          name="pay_rate"
-                          placeholder="Enter the monthly pay rate (leave blank if unknown)"
+                          id="industry"
+                          name="industry"
+                          placeholder="Enter your company's industry e.g., Digital Marketing, Commercial Law"
                         >
-                    </div>
-                    <!-- Role Overview -->
-                    <div class="form-group">
-                        <label for="role_overview">Role Overview</label>
-                        <textarea
-                          class="form-control"
-                          id="role_overview"
-                          name="role_overview"
-                          rows="3"
-                          placeholder="Provide an overview of the role"
-                        ></textarea>
                     </div>
                     <!-- Key Responsibilities -->
                     <div class="form-group">
@@ -82,7 +60,7 @@
                           id="responsibilities"
                           name="responsibilities"
                           rows="3"
-                          placeholder="List key responsibilities"
+                          placeholder="List the key responsibilities e.g., Handling inbound calls, document preparation"
                         ></textarea>
                     </div>
                     <!-- Requirements -->
@@ -93,18 +71,7 @@
                           id="requirements"
                           name="requirements"
                           rows="3"
-                          placeholder="List requirements for the role"
-                        ></textarea>
-                    </div>
-                    <!-- Benefits -->
-                    <div class="form-group">
-                        <label for="benefits">Benefits</label>
-                        <textarea
-                          class="form-control"
-                          id="benefits"
-                          name="benefits"
-                          rows="3"
-                          placeholder="List benefits and perks"
+                          placeholder="List the requirements for this role e.g., Bachelor's Degree, 2+ years experience"
                         ></textarea>
                     </div>
                     <!-- Submit Button -->
