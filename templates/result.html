@@ -39,7 +39,11 @@
                     <div class="card-body">
                         <div class="text-right mb-2">
                             <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard()">Copy</button>
-                            <a href="{{ url_for('download_pdf') }}" class="btn btn-sm btn-outline-success">Download PDF</a>
+                            <!-- Download PDF Form -->
+                            <form method="post" action="{{ url_for('download_pdf') }}" style="display: inline;">
+                                <input type="hidden" name="job_description" value="{{ job_description|tojson }}">
+                                <button type="submit" class="btn btn-sm btn-outline-success">Download PDF</button>
+                            </form>
                         </div>
                         <div id="jobDescription" class="job-description">{{ job_description|safe }}</div>
                     </div>

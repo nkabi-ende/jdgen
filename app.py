@@ -71,7 +71,7 @@ Do not include any other sections.
                     {"role": "system", "content": "You are a professional job description writer specializing in creating engaging and persuasive job postings."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=1500,  # Adjusted as needed
+                max_tokens=1500,  # Adjust as needed
                 temperature=0.5,   # Lowered to increase consistency
             )
 
@@ -84,20 +84,24 @@ Do not include any other sections.
             return f"An error occurred: {str(e)}"
     return render_template('index.html')
 
-@app.route('/download_pdf')
+@app.route('/download_pdf', methods=['GET', 'POST'])
 def download_pdf():
-    job_description = session.get('job_description', '')
-    if not job_description:
-        return redirect(url_for('generate_jd'))
+    if request.method == 'POST':
+        # Retrieve job_description from the form data
+        job_description = request.form.get('job_description', '')
+        if not job_description:
+            return redirect(url_for('generate_jd'))
+    else:
+        # If GET request, try to get job_description from the session (optional)
+        job_description = session.get('job_description', '')
+        if not job_description:
+            return redirect(url_for('generate_jd'))
 
     # Set the logo filename
     logo_filename = 'Employmate_Logo_2.png'  # Ensure this matches your logo file name
 
     # Construct the logo path using forward slashes
     logo_path = os.path.join('static', logo_filename).replace('\\', '/')
-
-    # Optional: Print the logo path for debugging
-    # print(f"Logo path: {logo_path}")
 
     # Render the PDF template
     rendered = render_template('pdf_template.html', job_description=job_description, logo_path=logo_path)
