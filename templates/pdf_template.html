@@ -9,24 +9,44 @@
             margin: 20px;
             font-size: 12pt;
         }
-        h1, h2, h3 {
+        h1 {
             text-align: center;
+            font-size: 18pt;
+            margin-bottom: 20px;
         }
-        pre {
-            white-space: pre-wrap;
-            font-size: 12pt;
-        }
-        /* Additional styling to improve PDF layout */
-        .section-title {
-            font-weight: bold;
+        h2 {
+            font-size: 16pt;
             margin-top: 20px;
             margin-bottom: 10px;
-            font-size: 14pt;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        ul {
+            margin-left: 20px;
+            list-style-type: disc;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        /* Style for the logo */
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 200px; /* Adjust the size as needed */
         }
     </style>
 </head>
 <body>
+    {% if logo_path %}
+    <div class="logo">
+        <img src="{{ logo_path }}" alt="Employmate Logo">
+    </div>
+    {% endif %}
     <h1>Job Description</h1>
-    <pre>{{ job_description }}</pre>
+    <div>{{ job_description|safe }}</div>
 </body>
 </html>
+

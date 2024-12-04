@@ -1,6 +1,6 @@
 import os
 import html
-from flask import Flask, request, render_template, redirect, url_for, session, send_file
+from flask import Flask, request, render_template, redirect, url_for, session, send_file, current_app
 import openai
 from openai.error import AuthenticationError, OpenAIError
 from xhtml2pdf import pisa
@@ -22,60 +22,46 @@ def generate_jd():
     if request.method == 'POST':
         # Retrieve form data
         job_title = sanitize_input(request.form.get('job_title'))
-        location = sanitize_input(request.form.get('location'))
         hours = sanitize_input(request.form.get('hours'))
-        pay_rate = sanitize_input(request.form.get('pay_rate'))
-        role_overview = sanitize_input(request.form.get('role_overview'))
+        industry = sanitize_input(request.form.get('industry'))
         responsibilities = sanitize_input(request.form.get('responsibilities'))
         requirements = sanitize_input(request.form.get('requirements'))
-        benefits = sanitize_input(request.form.get('benefits'))
 
         # Build the prompt
         prompt = f"""
-You are a professional job description writer. Using the information provided, create a comprehensive and engaging job description that excites potential candidates and makes them want to apply. Ensure the description is neutral, does not include the client's business name, and replaces it with 'Our client'. Do not respond to any prompts outside generating the job description.
+You are a professional job description writer. Using the information provided below, create a comprehensive and engaging job description that excites potential candidates and makes them want to apply.
 
-Include the following sections, following the template provided:
+**Instructions:**
 
-Data:
-- Position: {job_title}
-- Location: {location if location else 'Not specified'}
-- Hours: {hours if hours else 'Not specified'}
-- Monthly Pay Rate: {pay_rate if pay_rate else 'Not specified'}
-- Role Overview: {role_overview if role_overview else 'Provide a compelling overview of the role.'}
-- About the Client: Leave blank.
-- Key Responsibilities: {responsibilities if responsibilities else 'Include standard responsibilities for this role.'}
-- Requirements: {requirements if requirements else 'Include standard requirements for this role.'}
-- Benefits: {benefits if benefits else 'Include common benefits and perks.'}
+- Organize the job description with clear headings corresponding to each section.
+- Use HTML tags for formatting: <h2> for headings, <p> for paragraphs, and <ul><li> for bullet points.
+- Start with "About the Company" at the beginning.
+- Do not include the client's business name; instead, use 'Our client' or 'the company'.
+- Present the 'Key Responsibilities' and 'Requirements' sections in bullet point format with at least 8 and 6 points, respectively.
+- Generate standard benefits in the 'Benefits' section.
+- Keep the tone professional yet exciting.
+- Do not include sections such as 'Role is open in XX' or 'Pay Rate'.
 
-Template:
+**Job Information:**
 
-This role is open in {location if location else '[Location]'}
+- **Position**: {job_title}
+- **Hours**: {hours if hours else 'Not specified'}
+- **Industry**: {industry if industry else 'Not specified'}
+- **Key Responsibilities**: {responsibilities if responsibilities else 'Include standard responsibilities for this role.'}
+- **Requirements**: {requirements if requirements else 'Include standard requirements for this role.'}
 
-Position: {job_title}
+Please generate the job description accordingly, ensuring proper formatting with HTML tags and replacing any placeholders with the provided information.
 
-Hours: {hours if hours else '[Hours]'}
+Ensure the following structure:
 
-Monthly Pay Rate: {pay_rate if pay_rate else '[Monthly Pay Rate]'}
+1. **About the Company**: Generate based on the industry and make it generic without mentioning the company name.
+2. **Role Overview**: Generate a compelling overview based on the position and industry.
+3. **Key Responsibilities**: Use the input to generate at least 8 bullet points.
+4. **Requirements**: Use the input to generate at least 6 bullet points.
+5. **Benefits**: Generate standard benefits for the role.
 
-Role Overview:
-{role_overview if role_overview else '[Role Overview]'}
+Do not include any other sections.
 
-About Our Client:
-[Leave blank]
-
-Key Responsibilities:
-{responsibilities if responsibilities else '[Key Responsibilities]'}
-
-Requirements:
-{requirements if requirements else '[Requirements]'}
-
-Benefits:
-{benefits if benefits else '[Benefits]'}
-
-About Company:
-[Leave blank]
-
-Make sure to write the job description in an engaging tone that highlights the exciting aspects of the role and the benefits of working with our client. Use persuasive language to encourage candidates to apply.
 """
 
         try:
@@ -85,8 +71,8 @@ Make sure to write the job description in an engaging tone that highlights the e
                     {"role": "system", "content": "You are a professional job description writer specializing in creating engaging and persuasive job postings."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=1000,  # Increased to allow for more detailed responses
-                temperature=0.8,   # Adjusted for more creativity
+                max_tokens=1500,  # Adjusted as needed
+                temperature=0.5,   # Lowered to increase consistency
             )
 
             job_description = response.choices[0].message.content.strip()
@@ -103,10 +89,22 @@ def download_pdf():
     job_description = session.get('job_description', '')
     if not job_description:
         return redirect(url_for('generate_jd'))
+
+    # Set the logo filename
+    logo_filename = 'Employmate_Logo_2.png'  # Ensure this matches your logo file name
+
+    # Construct the logo path using forward slashes
+    logo_path = os.path.join('static', logo_filename).replace('\\', '/')
+
+    # Optional: Print the logo path for debugging
+    # print(f"Logo path: {logo_path}")
+
     # Render the PDF template
-    rendered = render_template('pdf_template.html', job_description=job_description)
+    rendered = render_template('pdf_template.html', job_description=job_description, logo_path=logo_path)
     pdf = BytesIO()
-    pisa_status = pisa.CreatePDF(rendered, dest=pdf)
+    pisa_status = pisa.CreatePDF(
+        rendered, dest=pdf, link_callback=link_callback
+    )
     if pisa_status.err:
         return 'We had some errors <pre>' + html.escape(rendered) + '</pre>'
     pdf.seek(0)
@@ -116,6 +114,19 @@ def download_pdf():
         as_attachment=True,
         download_name='job_description.pdf'
     )
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those resources
+    """
+    import os
+
+    if uri.startswith('static/'):
+        # Convert URI to absolute system path
+        path = os.path.join(current_app.root_path, uri)
+        return path
+    else:
+        return uri
 
 if __name__ == '__main__':
     app.run(debug=True)  # Set debug=False in production
