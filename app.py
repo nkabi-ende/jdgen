@@ -1,6 +1,6 @@
 import os
 import html
-from flask import Flask, request, render_template, redirect, url_for, session, send_file, current_app
+from flask import Flask, request, render_template, redirect, url_for, send_file, current_app
 import openai
 from openai.error import AuthenticationError, OpenAIError
 from xhtml2pdf import pisa
@@ -97,6 +97,13 @@ def download_pdf():
     # Construct the logo path using forward slashes
     logo_path = os.path.join('static', logo_filename).replace('\\', '/')
 
+    # Convert the logo path to an absolute system path for xhtml2pdf
+    absolute_logo_path = os.path.join(current_app.root_path, logo_path)
+
+    # Optional: Print the paths for debugging
+    # print(f"Logo path: {logo_path}")
+    # print(f"Absolute logo path: {absolute_logo_path}")
+
     # Render the PDF template
     rendered = render_template('pdf_template.html', job_description=job_description, logo_path=logo_path)
     pdf = BytesIO()
@@ -122,7 +129,8 @@ def link_callback(uri, rel):
     if uri.startswith('static/'):
         # Convert URI to absolute system path
         path = os.path.join(current_app.root_path, uri)
-        return path
+        # Ensure the path uses the correct separators
+        return os.path.normpath(path)
     else:
         return uri
 
