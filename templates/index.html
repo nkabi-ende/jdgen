@@ -14,7 +14,6 @@
 <body>
     <div class="container">
         <h1 class="mt-5 mb-4 text-center">Generate Job Description</h1>
-        <!-- Center the form and limit its width -->
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-8">
                 <form method="post" onsubmit="showLoader()">
@@ -74,7 +73,17 @@
                           placeholder="List the requirements for this role e.g., Bachelor's Degree, 2+ years experience"
                         ></textarea>
                     </div>
-                    <!-- Submit Button -->
+                    <!-- Benefits -->
+                    <div class="form-group">
+                        <label for="benefits">Benefits</label>
+                        <textarea
+                          class="form-control"
+                          id="benefits"
+                          name="benefits"
+                          rows="3"
+                          placeholder="List the benefits. If left blank, default non-country-specific benefits will be used (e.g., flexible working hours, competitive salary)"
+                        ></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block">Generate</button>
                 </form>
                 <div id="loader" class="text-center mt-3" style="display: none;">

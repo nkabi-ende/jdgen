@@ -26,6 +26,18 @@ def generate_jd():
         industry = sanitize_input(request.form.get('industry'))
         responsibilities = sanitize_input(request.form.get('responsibilities'))
         requirements = sanitize_input(request.form.get('requirements'))
+        benefits = sanitize_input(request.form.get('benefits'))
+
+        # If no benefits provided, use a generic set of benefits
+        default_benefits = ("Flexible working hours, Competitive salary, "
+                            "Health insurance, Professional development opportunities, "
+                            "Collaborative work environment, Performance bonuses, "
+                            "Remote work options, Paid time off")
+
+        if not benefits:
+            benefits_input = 'Use a standard set of non-country-specific benefits, such as:\n' + default_benefits
+        else:
+            benefits_input = benefits
 
         # Build the prompt
         prompt = f"""
@@ -38,7 +50,7 @@ You are a professional job description writer. Using the information provided be
 - Start with "About the Company" at the beginning.
 - Do not include the client's business name; instead, use 'Our client' or 'the company'.
 - Present the 'Key Responsibilities' and 'Requirements' sections in bullet point format with at least 8 and 6 points, respectively.
-- Generate standard benefits in the 'Benefits' section.
+- For the 'Benefits' section, if no benefits were provided, use a generic set of non-country-specific benefits like flexible working hours, competitive salary, etc.
 - Keep the tone professional yet exciting.
 - Do not include sections such as 'Role is open in XX' or 'Pay Rate'.
 
@@ -49,6 +61,7 @@ You are a professional job description writer. Using the information provided be
 - **Industry**: {industry if industry else 'Not specified'}
 - **Key Responsibilities**: {responsibilities if responsibilities else 'Include standard responsibilities for this role.'}
 - **Requirements**: {requirements if requirements else 'Include standard requirements for this role.'}
+- **Benefits**: {benefits_input}
 
 Please generate the job description accordingly, ensuring proper formatting with HTML tags and replacing any placeholders with the provided information.
 
@@ -58,10 +71,9 @@ Ensure the following structure:
 2. **Role Overview**: Generate a compelling overview based on the position and industry.
 3. **Key Responsibilities**: Use the input to generate at least 8 bullet points.
 4. **Requirements**: Use the input to generate at least 6 bullet points.
-5. **Benefits**: Generate standard benefits for the role.
+5. **Benefits**: Use the provided benefits if given, otherwise use the generic non-country-specific benefits mentioned.
 
 Do not include any other sections.
-
 """
 
         try:
@@ -71,12 +83,11 @@ Do not include any other sections.
                     {"role": "system", "content": "You are a professional job description writer specializing in creating engaging and persuasive job postings."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=1500,  # Adjust as needed
-                temperature=0.5,   # Lowered to increase consistency
+                max_tokens=1500,
+                temperature=0.5,  # Lowered to increase consistency
             )
 
             job_description = response.choices[0].message.content.strip()
-            # session['job_description'] = job_description  # No longer needed
             return render_template('result.html', job_description=job_description)
         except AuthenticationError:
             return "Authentication Error: Please check your OpenAI API key."
@@ -96,13 +107,6 @@ def download_pdf():
 
     # Construct the logo path using forward slashes
     logo_path = os.path.join('static', logo_filename).replace('\\', '/')
-
-    # Convert the logo path to an absolute system path for xhtml2pdf
-    absolute_logo_path = os.path.join(current_app.root_path, logo_path)
-
-    # Optional: Print the paths for debugging
-    # print(f"Logo path: {logo_path}")
-    # print(f"Absolute logo path: {absolute_logo_path}")
 
     # Render the PDF template
     rendered = render_template('pdf_template.html', job_description=job_description, logo_path=logo_path)
@@ -127,10 +131,8 @@ def link_callback(uri, rel):
     import os
 
     if uri.startswith('static/'):
-        # Convert URI to absolute system path
         path = os.path.join(current_app.root_path, uri)
-        # Ensure the path uses the correct separators
-        return os.path.normpath(path)
+        return path
     else:
         return uri
 
