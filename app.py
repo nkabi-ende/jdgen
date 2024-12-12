@@ -28,14 +28,14 @@ def generate_jd():
         requirements = sanitize_input(request.form.get('requirements'))
         benefits = sanitize_input(request.form.get('benefits'))
 
-        # If no benefits provided, use a generic set of benefits
-        default_benefits = ("Flexible working hours, Competitive salary, "
-                            "Health insurance, Professional development opportunities, "
-                            "Collaborative work environment, Performance bonuses, "
-                            "Remote work options, Paid time off")
+        # Neutral, non-country-specific, remote-work-focused default benefits
+        default_benefits = ("Fully remote or flexible hybrid work arrangements, Flexible working hours, "
+                            "Performance-based bonuses, Professional development opportunities, "
+                            "Collaborative online team environment, Regular virtual team-building activities, "
+                            "Supportive leadership with clear communication channels, Opportunities for career growth")
 
         if not benefits:
-            benefits_input = 'Use a standard set of non-country-specific benefits, such as:\n' + default_benefits
+            benefits_input = 'Use a set of neutral, non-country-specific, remote-friendly benefits such as:\n' + default_benefits
         else:
             benefits_input = benefits
 
@@ -50,7 +50,7 @@ You are a professional job description writer. Using the information provided be
 - Start with "About the Company" at the beginning.
 - Do not include the client's business name; instead, use 'Our client' or 'the company'.
 - Present the 'Key Responsibilities' and 'Requirements' sections in bullet point format with at least 8 and 6 points, respectively.
-- For the 'Benefits' section, if no benefits were provided, use a generic set of non-country-specific benefits like flexible working hours, competitive salary, etc.
+- For the 'Benefits' section, if no benefits were provided by the user, use only neutral, non-country-specific, remote-work-friendly benefits.
 - Keep the tone professional yet exciting.
 - Do not include sections such as 'Role is open in XX' or 'Pay Rate'.
 
@@ -71,7 +71,7 @@ Ensure the following structure:
 2. **Role Overview**: Generate a compelling overview based on the position and industry.
 3. **Key Responsibilities**: Use the input to generate at least 8 bullet points.
 4. **Requirements**: Use the input to generate at least 6 bullet points.
-5. **Benefits**: Use the provided benefits if given, otherwise use the generic non-country-specific benefits mentioned.
+5. **Benefits**: If no user-provided benefits, use the neutral, non-country-specific, remote-friendly benefits mentioned.
 
 Do not include any other sections.
 """
@@ -83,8 +83,8 @@ Do not include any other sections.
                     {"role": "system", "content": "You are a professional job description writer specializing in creating engaging and persuasive job postings."},
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=1500,
-                temperature=0.5,  # Lowered to increase consistency
+                max_tokens=1500,  # Adjust as needed
+                temperature=0.5,   # Lowered to increase consistency
             )
 
             job_description = response.choices[0].message.content.strip()
